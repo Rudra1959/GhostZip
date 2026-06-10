@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "GhostZip",
+  "version": "0.1.0",
+  "identifier": "com.ghostzip.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "GhostZip",
+        "width": 1180,
+        "height": 760,
+        "minWidth": 900,
+        "minHeight": 620
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "GhostZip",
+    "resources": {
+      "resources/7za.exe": "../node_modules/7zip-bin/win/x64/7za.exe"
+    },
+    "fileAssociations": [
+      {
+        "ext": ["zip", "7z", "tar", "gz", "tgz", "bz2", "xz", "rar"],
+        "name": "GhostZip Archive",
+        "description": "Archive handled by GhostZip",
+        "role": "Viewer"
+      }
+    ],
+    "icon": [
+      "icons/icon.svg"
+    ],
+    "windows": {
+      "nsis": {
+        "displayLanguageSelector": true,
+        "installerHooks": "windows/nsis-hooks.nsh",
+        "installMode": "currentUser",
+        "languages": ["English"]
+      }
+    }
+  }
+}

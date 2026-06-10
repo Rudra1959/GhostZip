@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="GhostZip icon">
+  <rect width="256" height="256" rx="44" fill="#10141a"/>
+  <path d="M70 52h92l34 34v112a8 8 0 0 1-8 8H70a8 8 0 0 1-8-8V60a8 8 0 0 1 8-8Z" fill="#202832" stroke="#52d6a4" stroke-width="10"/>
+  <path d="M162 54v36h36" fill="none" stroke="#73b7ff" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M106 72h24v18h-24zm24 18h24v18h-24zm-24 18h24v18h-24zm24 18h24v18h-24zm-24 18h24v18h-24z" fill="#f4b85a"/>
+  <path d="M88 185c21-25 71-25 92 0" fill="none" stroke="#f8fbff" stroke-width="10" stroke-linecap="round"/>
+</svg>
