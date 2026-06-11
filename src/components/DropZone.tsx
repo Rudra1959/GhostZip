@@ -53,8 +53,8 @@ export function DropZone({
     <div className={`drop-screen flex-center ${isDragging ? 'dragging' : ''}`} style={{ height: '100%', justifyContent: 'center' }}>
       <div className="drop-zone glass-panel">
         {isDragging ? <UploadCloud size={64} className="drop-icon pulse" /> : <Archive size={64} className="drop-icon" />}
-        <h1>{isDragging ? 'Drop it like it\'s hot' : 'Select Archive'}</h1>
-        <p className="subtext" style={{ marginTop: '8px', marginBottom: '32px' }}>Next-generation extraction with zero-space purge technology.</p>
+        <h1>{isDragging ? 'Release to analyze' : 'Select Archive'}</h1>
+        <p className="subtext" style={{ marginTop: '8px', marginBottom: '32px' }}>Analyze the archive, check disk space, then extract with the safest mode for this drive.</p>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
           <div>

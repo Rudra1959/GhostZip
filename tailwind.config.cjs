@@ -1,11 +1,10 @@
-import type { Config } from "tailwindcss";
-
-export default {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "Segoe UI", "system-ui", "sans-serif"]
+        sans: ["Aptos", "Segoe UI Variable Text", "Segoe UI", "sans-serif"],
       },
       colors: {
         ink: "#10141a",
@@ -15,9 +14,9 @@ export default {
         mint: "#52d6a4",
         amber: "#f4b85a",
         danger: "#ff6b6b",
-        sky: "#73b7ff"
-      }
-    }
+        sky: "#73b7ff",
+      },
+    },
   },
-  plugins: []
-} satisfies Config;
+  plugins: [],
+};

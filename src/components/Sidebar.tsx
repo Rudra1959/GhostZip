@@ -1,13 +1,12 @@
 import React from 'react';
 import { Upload, ShieldCheck, HardDrive, Settings } from 'lucide-react';
-// @ts-ignore
-import iconUrl from '../assets/icon.png';
+import { GhostLogo } from './GhostLogo';
 
 export function Sidebar({ step, manifest, onStepChange, onSettingsClick }: any) {
   return (
     <header className="sidebar glass-panel">
       <div className="brand">
-        <img src={iconUrl} alt="GhostZip Logo" />
+        <GhostLogo size={24} />
         <div className="brand-mark">GhostZip</div>
       </div>
       <nav className="nav-menu">

@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "dev": "node scripts/vite-runner.mjs dev",
+    "build": "tsc && node scripts/vite-runner.mjs build",
+    "preview": "node scripts/vite-runner.mjs preview",
     "tauri": "tauri"
   },
   "dependencies": {

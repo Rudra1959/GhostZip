@@ -8,13 +8,28 @@ import { Analysis } from './components/Analysis';
 import { Extraction } from './components/Extraction';
 import { Completion } from './components/Completion';
 import { SettingsPanel } from './components/SettingsPanel';
+import { LandingPage } from './components/LandingPage';
 import './styles.css';
 
 export default function App() {
+  if (!isTauriRuntime()) {
+    return <LandingPage />;
+  }
+
+  return <DesktopApp />;
+}
+
+function isTauriRuntime() {
+  return typeof window !== "undefined" && Boolean(
+    (window as Window & { __TAURI_INTERNALS__?: unknown }).__TAURI_INTERNALS__
+  );
+}
+
+function DesktopApp() {
   const {
     step, setStep, archivePath, setArchivePath, outputDir, setOutputDir,
     manifest, setManifest, progress, eta, error, busy, paused, archiveDeleted,
-    analyzeArchive, startExtraction, control, setError
+    archiveShrinkage, extractionMode, analyzeArchive, startExtraction, control, setError
   } = useExtraction();
 
   const [theme, setTheme] = useTheme();
@@ -30,7 +45,7 @@ export default function App() {
         {error && (
           <div className="error-banner">
             <span>{error}</span>
-            <button className="close-btn" onClick={() => setError("")}>×</button>
+            <button className="close-btn" onClick={() => setError("")}>x</button>
           </div>
         )}
         
@@ -44,10 +59,12 @@ export default function App() {
           )}
           {step === "extracting" && manifest && (
             <Extraction manifest={manifest} progress={progress} eta={eta} busy={busy} paused={paused}
+              archiveShrinkage={archiveShrinkage} extractionMode={extractionMode}
               onPause={() => control("pause_extraction")} onResume={() => control("resume_extraction")} onCancel={() => control("cancel_extraction")} />
           )}
           {step === "complete" && manifest && (
             <Completion manifest={manifest} autoDelete={autoDelete} archiveDeleted={archiveDeleted}
+              extractionMode={extractionMode}
               onOpenOutput={() => openPath(manifest.outputDir)} 
               onReset={() => { setArchivePath(""); setOutputDir(""); setStep("drop"); setManifest(null); }} />
           )}

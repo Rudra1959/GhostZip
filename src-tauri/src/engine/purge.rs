@@ -127,10 +127,7 @@ fn purge_zip(
             }
         }
 
-        let data_start: u64;
-        let compressed_size: u64;
-
-        {
+        let extraction_result: EngineResult<(u64, u64)> = (|| {
             let file = File::open(&archive_path).map_err(|source| EngineError::Io {
                 context: format!("open archive {}", archive_path.display()),
                 source,
@@ -148,8 +145,8 @@ fn purge_zip(
                 EngineError::Archive(format!("ZIP entry {} not found: {e}", entry.path))
             })?;
 
-            data_start = source.data_start();
-            compressed_size = source.compressed_size();
+            let data_start = source.data_start();
+            let compressed_size = source.compressed_size();
             let expected_crc32 = source.crc32();
 
             let temp_output = output_path.with_extension("ghostzip-partial");
@@ -220,7 +217,24 @@ fn purge_zip(
                 context: format!("finalize {}", output_path.display()),
                 source,
             })?;
-        }
+
+            Ok((data_start, compressed_size))
+        })();
+
+        let (data_start, compressed_size) = match extraction_result {
+            Ok(res) => res,
+            Err(e) => {
+                eprintln!("Failed to extract file {}: {:?}", entry.path, e);
+                let _ = app.emit(
+                    crate::engine::EVENT_ERROR,
+                    serde_json::json!({
+                        "fileName": entry.path.clone(),
+                        "errorMessage": e.user_message()
+                    }),
+                );
+                continue;
+            }
+        };
 
         extracted_bytes = extracted_bytes.saturating_add(entry.uncompressed_size);
         extracted_files += 1;
@@ -250,10 +264,14 @@ fn purge_zip(
             }
         }
 
-        let remaining_compressed = session.manifest.compressed_size.saturating_sub(
-            (extracted_bytes as f64 / session.manifest.total_uncompressed_size as f64 
-                * session.manifest.compressed_size as f64) as u64
-        );
+        let remaining_compressed = if session.manifest.total_uncompressed_size == 0 {
+            0
+        } else {
+            session.manifest.compressed_size.saturating_sub(
+                (extracted_bytes as f64 / session.manifest.total_uncompressed_size as f64
+                    * session.manifest.compressed_size as f64) as u64
+            )
+        };
 
         let _ = app.emit(
             EVENT_PURGE_PROGRESS,
@@ -265,7 +283,13 @@ fn purge_zip(
         );
     }
 
-    let _ = fs::remove_file(&archive_path);
+    #[cfg(windows)]
+    drop(archive_for_sparse);
+
+    fs::remove_file(&archive_path).map_err(|source| EngineError::Io {
+        context: format!("delete source archive {}", archive_path.display()),
+        source,
+    })?;
 
     engine.set_mode(&session.manifest.session_id, ExtractionMode::Complete)?;
     let _ = app.emit(
@@ -295,7 +319,19 @@ fn purge_via_7za(
         helper_path,
     )?;
 
-    let _ = fs::remove_file(&session.manifest.archive_path);
+    fs::remove_file(&session.manifest.archive_path).map_err(|source| EngineError::Io {
+        context: format!("delete source archive {}", session.manifest.archive_path.display()),
+        source,
+    })?;
+
+    let _ = app.emit(
+        EVENT_COMPLETE,
+        serde_json::json!({
+            "totalFiles": session.manifest.file_count,
+            "outputDir": session.manifest.output_dir.display().to_string(),
+            "archiveDeleted": true,
+        }),
+    );
 
     Ok(())
 }
@@ -313,7 +349,19 @@ fn purge_tar_fallback(
         super::UserExtractionMode::ExtractAndPurge,
         None,
     )?;
-    let _ = fs::remove_file(&session.manifest.archive_path);
+    fs::remove_file(&session.manifest.archive_path).map_err(|source| EngineError::Io {
+        context: format!("delete source archive {}", session.manifest.archive_path.display()),
+        source,
+    })?;
+
+    let _ = app.emit(
+        EVENT_COMPLETE,
+        serde_json::json!({
+            "totalFiles": session.manifest.file_count,
+            "outputDir": session.manifest.output_dir.display().to_string(),
+            "archiveDeleted": true,
+        }),
+    );
     Ok(())
 }
 

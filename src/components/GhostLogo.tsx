@@ -1,0 +1,35 @@
+import React from 'react';
+
+interface GhostLogoProps {
+  size?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export function GhostLogo({ size = 24, className = "", style }: GhostLogoProps) {
+  return (
+    <svg 
+      width={size} 
+      height={size} 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={style}
+    >
+      <defs>
+        <linearGradient id="ghostGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#00e5c0" />
+          <stop offset="100%" stopColor="#00c9a8" />
+        </linearGradient>
+      </defs>
+      <rect width="24" height="24" rx="6" fill="url(#ghostGrad)" />
+      <path 
+        d="M7 16.5V9C7 6.23858 9.23858 4 12 4C14.7614 4 17 6.23858 17 9V16.5C17 17.5 16 18 15 18C14 18 13.5 17 13 17L12.5 16C12.2239 15.4477 11.7761 15.4477 11.5 16L11 17C10.5 18 10 18 9 18C8 18 7 17.5 7 16.5Z" 
+        fill="#07070a" 
+      />
+      <circle cx="10" cy="10" r="1.5" fill="#00e5c0" />
+      <circle cx="14" cy="10" r="1.5" fill="#00e5c0" />
+    </svg>
+  );
+}

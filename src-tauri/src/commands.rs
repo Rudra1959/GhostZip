@@ -15,6 +15,13 @@ pub struct LaunchContext {
     pub requested_action: String,
 }
 
+#[derive(Clone, Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ExtractionErrorEvent {
+    file_name: String,
+    error_message: String,
+}
+
 #[tauri::command]
 pub fn get_launch_context() -> LaunchContext {
     let mut args = std::env::args().skip(1);
@@ -129,7 +136,10 @@ pub fn start_extraction(
             // Ignore send errors if the app is closing
             let _ = app.emit(
                 crate::engine::EVENT_ERROR,
-                e.user_message(),
+                ExtractionErrorEvent {
+                    file_name: "Extraction".to_string(),
+                    error_message: e.user_message(),
+                },
             );
         }
     });

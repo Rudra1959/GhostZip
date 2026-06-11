@@ -2,6 +2,11 @@
 
 GhostZip is a Windows-first desktop archive extractor built with Rust, Tauri, React, and TypeScript. Its main goal is to help extract archives on drives with tight free space by inspecting the archive first, checking target-drive space, and extracting files sequentially instead of blindly unpacking everything at once.
 
+The repo now has two user-facing surfaces:
+
+- `npm run dev` starts the public landing page for download, features, install steps, and deployment copy.
+- `npm run tauri dev` starts the desktop extractor app.
+
 ## Verified Status
 
 I checked the current repository behavior and verified:
@@ -91,11 +96,17 @@ GhostZip validates archive paths before writing:
 
 ```powershell
 npm install
+npm run dev
+npm run tauri dev
 npm run build
 npm run tauri build
 ```
 
 The configured Windows bundle target is NSIS. Tauri writes the installer under `src-tauri/target/release/bundle/nsis/`.
+
+If Windows reports `ENOENT` while tools try to create temporary files or the `dist` folder, move the repo to a normal writable development path such as `C:\dev\Ghostzip` or allow the folder in Windows Security Controlled Folder Access.
+
+For release and hosting steps, see [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Test From Source
 

@@ -3,7 +3,7 @@ import { CheckCircle2, FolderOpen, Trash2, ArrowLeft } from 'lucide-react';
 import { invoke } from '@tauri-apps/api/core';
 
 export function Completion({
-  manifest, autoDelete, archiveDeleted, onOpenOutput, onReset
+  manifest, autoDelete, archiveDeleted, extractionMode, onOpenOutput, onReset
 }: any) {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleted, setDeleted] = useState(archiveDeleted || false);
@@ -43,6 +43,14 @@ export function Completion({
         </div>
 
         {error && <div style={{ background: 'rgba(255,0,85,0.1)', color: 'var(--danger-color)', padding: '12px', borderRadius: '8px', marginBottom: '24px' }}>{error}</div>}
+
+        <p className="subtext" style={{ marginBottom: '24px' }}>
+          {deleted
+            ? extractionMode === "extractAndPurge"
+              ? "The source archive was removed after the purge extraction finished."
+              : "The source archive has been deleted to recover disk space."
+            : "The source archive is still available until you delete it."}
+        </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <button className="primary" onClick={onOpenOutput} style={{ height: '48px', fontSize: '16px' }}>

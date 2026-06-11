@@ -148,4 +148,5 @@ mod tests {
         assert!(should_use_space_saver(five_hundred_mb, two_gb));
     }
 }
+#[cfg(windows)]
 pub mod sparse;
